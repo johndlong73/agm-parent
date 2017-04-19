@@ -1,0 +1,108 @@
+swagger: '2.0'
+info:
+  title: Sensor History
+  description: Historical sensor data
+  version: "1.0"
+# the domain of the service
+host: 127.0.0.1:8080
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: '/v1.0/customerid'
+produces:
+  - application/json
+paths:
+  /sensor_history:
+    get:
+      summary: Sensor History
+      description: |
+        The Sensor History returns a collection of historical data points from sensors
+      parameters:
+        - name: timestamp
+          in: query
+          description: The timestamp of the request in GMT.  This service will return error code 401 if the timestamp is greater than one minute old.
+          required: true
+          type: number
+        - name: token
+          in: query
+          description: The security token.  A hash of “AGM” + customer_id + timestamp  
+          required: true
+          type: string
+        - name: startDate
+          in: query
+          description: Find historical data points that come after startDate.  The date is a string representation of date and time in ISO 8601 format. Use with endDate to find all historical data points between startDate and endDate.
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: Find historical data points that come before endDate. The date is a string representation of date and time in ISO 8601 format. Use with startDate to find all historical data points between startDate and endDate.
+          required: false
+          type: string
+        - name: sensorType
+          in: query
+          description: Filter based on sensor types.  Accepts a comma separated list of sensorTypes.  All sensor types will be returned if sensorType is not provided.  
+          required: false
+          type: string
+      tags:
+        - SensorHistory
+      responses:
+        200:
+          description: Returns sensor histories.
+          schema:
+            $ref: '#/definitions/SensorHistories'
+        400:
+          description: Returned if startDate and or endDate are invalid or empty if either parameter is provided.  Returned if startDate is greater than endDate when both startDate and endDate are provided.
+          schema: 
+            $ref: '#/definitions/Error'
+        401:
+          description: Returned when the timestamp is greater than one minute old.
+
+
+definitions:
+  SensorHistory:
+    type: object
+    properties:
+      deviceId: 
+        type: string
+        description: "Identifies a particular device"
+      deviceType:
+        type: string
+        description: "Identifies what type of device"
+        enum:
+          ['Light', 'Humidity', 'CO2', 'Temperature', 'Water_Pump', 'Water_Level', 'Water_Temperature', 'Water_Pressure', 'Mixer', 'Circulation_Pump', 'Water_Valve', 'EC', 'pH', 'H202', 'Stepper_1', 'Stepper_2', 'Stepper_3', 'Stepper_4', 'Stepper_6', 'Stepper_7', 'Weight_1', 'Weight_2', 'Weight_3', 'Weight_4', 'Weight_5', 'Weight_6', 'Weight_7']
+      sensorIndex:
+        type: number
+        description: "The sensor index"
+      target:
+        type: number
+        description: "The desired value for this sensor"
+      value:
+        type: number
+        description: "The actual value for this sensor"
+      createdAt:
+        type: string
+        description: The date and time this Sensor History was created. [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
+        
+  SensorHistories:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+        description: Total number of items available.
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/SensorHistory'
+    
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

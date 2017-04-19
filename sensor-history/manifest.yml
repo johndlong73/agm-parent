@@ -1,0 +1,8 @@
+---
+applications:
+- name: sensor-history
+  memory: 256M
+  instances: 1
+  host: rest-service
+  domain: guides.spring.io
+  path: build/libs/sensor-history-0.1.0.jar
