@@ -13,12 +13,12 @@ CD to agm-parent and run mvn clean install
 ## How to run
 
 Start SensorHistory service
-From the agm-parent folder run: java -jar sensor-history/target/sensor-history-<version>.jar
+From the agm-parent folder run: java -jar sensor-history/target/sensor-history-0.1.0.jar
 
 Start msr
-From the agm-parent folder run: java -jar msr/target/msr-<version>.jar
+From the agm-parent folder run: java -jar msr/target/msr-0.1.0.jar
 
-Where <version> is the version of the jar.
+Where 0.1.0 is the version of the jar.
 
 
 ## How to test
