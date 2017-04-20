@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+  then
+	PROPERTIES=""
+  else
+    PROPERTIES=$@
+fi
+
+mvn install -Pcreate-db $PROPERTIES
+mvn install -Pupdate-db $PROPERTIES
+mvn install -Ppopulate-db $PROPERTIES
+

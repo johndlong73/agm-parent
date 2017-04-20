@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+  then
+	PROPERTIES=""
+  else
+    PROPERTIES=$@
+fi
+
+mvn install -Pdestroy-db $PROPERTIES
