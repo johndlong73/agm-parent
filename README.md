@@ -18,12 +18,11 @@ The database automation is built on top of DBMaintain (http://www.dbmaintain.org
 
 Here are the instructions for building the databases from scratch.  Once complete you'll have three databases running in your MySQL server, aesadmin, c00001, and c00002.  The aesadmin is the admin database.  The c00001 and c00002 databases are the sensor_history databases for two test customers c00001 and c00002.
 
-CD to agm-parent/aesadmin-sqldb
-run ./builddb
-
-CD to agm-parent/sensorhistory-sqldb
-run ./builddb
-run ./builddb -Dproperties.file=src/main/config/c00002-sensorhistory.properties
+1. CD to agm-parent/aesadmin-sqldb
+1. run ./builddb
+1. CD to agm-parent/sensorhistory-sqldb
+1. run ./builddb
+1. run ./builddb -Dproperties.file=src/main/config/c00002-sensorhistory.properties
 
 Notice on the last command we added the -D switch?  That is because we are overriding the default value for the properties.file property and pointing it to a non default file.  These properties files contain connection string information and a pointer to a datafile which can be used to load seed data into your database.
 
