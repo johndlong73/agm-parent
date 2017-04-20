@@ -28,10 +28,10 @@ Notice on the last command we added the -D switch?  That is because we are overr
 
 There are other useful scripts in each of the sqldb projects.
 
-destroydb - Destroys a database by deleting it from the server
-rebuilddb - Destroy and then rebuild a database.  Same as calling destroydb followed by builddb
-populatedb - Load data into a database
-updatedb - Updates a database schema by applying the incremental change files that haven't been applied yet.  DBMaintain keeps track of which incremental change files have been applied. 
+* destroydb - Destroys a database by deleting it from the server
+* rebuilddb - Destroy and then rebuild a database.  Same as calling destroydb followed by builddb
+* populatedb - Load data into a database
+* updatedb - Updates a database schema by applying the incremental change files that haven't been applied yet.  DBMaintain keeps track of which incremental change files have been applied. 
 
 ## How to run
 Start your local database first.  Be sure to build it if you haven't done so already using the instructions above.
