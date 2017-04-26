@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Logic for handling property files.
+if [ -z "$1" ]
+  then
+	PROPERTIES=""
+  else
+    echo "Will use these properties: $1" 
+    PROPERTIES=$1
+fi
+
+mvn install -Pupdate-db $PROPERTIES

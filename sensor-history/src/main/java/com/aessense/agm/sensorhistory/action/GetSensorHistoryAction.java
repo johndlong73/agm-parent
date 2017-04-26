@@ -1,44 +1,62 @@
 package com.aessense.agm.sensorhistory.action;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.aessense.agm.sensorhistory.model.RestResponse;
-import com.aessense.agm.sensorhistory.model.SensorData;
+import com.aessense.agm.sensorhistory.model.SensorHistory;
+import com.aessense.agm.sensorhistory.repository.agmreport.SensorHistoryRepository;
+import com.aessense.agm.sensorhistory.rest.GetSensorHistoryRequest;
+import com.aessense.agm.sensorhistory.rest.RestResponse;
+import com.aessense.agm.sensorhistory.rest.SensorHistoryDto;
+import com.aessense.agm.sensorhistory.util.SensorTypeHelper;
 
 @Component
 public class GetSensorHistoryAction {
-
-	public RestResponse<SensorData> doAction() {
-
-		RestResponse<SensorData> response = new RestResponse<>();
-		List<SensorData> dataList = new ArrayList<>();
-
-		dataList.addAll(this.generateMockSensorData(1l, 1l, 1l, 5));
-		dataList.addAll(this.generateMockSensorData(2l, 2l, 2l, 5));
-		dataList.addAll(this.generateMockSensorData(3l, 3l, 3l, 5));
-		
-		response.setData(dataList);
-		response.setCount(dataList.size());
-
-		return response;
-	}
 	
-	private List<SensorData> generateMockSensorData(long deviceId, long sensorIndex, long sensorType, int count) {
-		List<SensorData> dataList = new ArrayList<>();
+	@Autowired
+	private SensorHistoryRepository sensorHistoryRepository;
+	
+	public ResponseEntity doAction(GetSensorHistoryRequest input, HttpServletRequest request, HttpServletResponse response) {
 		
+		int[] devices = SensorTypeHelper.enumListToIntArrayOfIds(input.getSensorTypes());
 		
+		List<SensorHistory> sensorHistoryList;
 		
-		for(int i = 0; i < count; i++) {
-			SensorData d = SensorData.builder().createdAt(new Date()).deviceId(deviceId).sensorIndex(sensorIndex).sensorType(sensorType)
-					.target(BigDecimal.valueOf(2.0)).value(BigDecimal.valueOf(1.0)).build();
-			dataList.add(d);
+		if(devices.length == 0) {
+			sensorHistoryList = sensorHistoryRepository.findByDeviceIdBetweenStartAndEnd(input.getDeviceId(), input.getStartDate(), input.getEndDate());
+		} else {
+			sensorHistoryList = sensorHistoryRepository.findByDeviceIdAndTypeBetweenStartAndEnd(input.getDeviceId(), devices, input.getStartDate(), input.getEndDate()); 
 		}
-		return dataList;
+		
+		RestResponse<SensorHistoryDto> restResponse = new RestResponse<>();
+		List<SensorHistoryDto> dataList = new ArrayList<>();
+
+		for(SensorHistory h : sensorHistoryList) {
+			dataList.add(
+				SensorHistoryDto.builder()
+					.createdAt(h.getCreated())
+					.deviceId(h.getDeviceId())
+					.sensorIndex(h.getSensorIndex())
+					.sensorType(h.getType())
+					.target(h.getTarget())
+					.value(h.getValue())
+					.build());
+		}
+		
+		restResponse.setData(dataList);
+		restResponse.setCount(dataList.size());
+
+		return ResponseEntity.status(HttpStatus.OK)
+		.contentType(MediaType.APPLICATION_JSON_UTF8)
+        .body(restResponse);		
 	}
 }

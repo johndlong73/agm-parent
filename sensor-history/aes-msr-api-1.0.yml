@@ -32,14 +32,14 @@ paths:
         - name: startDate
           in: query
           description: Find historical data points that come after startDate.  The date is a string representation of date and time in ISO 8601 format. Use with endDate to find all historical data points between startDate and endDate.
-          required: false
+          required: true
           type: string
         - name: endDate
           in: query
           description: Find historical data points that come before endDate. The date is a string representation of date and time in ISO 8601 format. Use with startDate to find all historical data points between startDate and endDate.
-          required: false
+          required: true
           type: string
-        - name: sensorType
+        - name: sensorTypes
           in: query
           description: Filter based on sensor types.  Accepts a comma separated list of sensorTypes.  All sensor types will be returned if sensorType is not provided.  
           required: false
@@ -70,7 +70,7 @@ definitions:
         type: string
         description: "Identifies what type of device"
         enum:
-          ['Light', 'Humidity', 'CO2', 'Temperature', 'Water_Pump', 'Water_Level', 'Water_Temperature', 'Water_Pressure', 'Mixer', 'Circulation_Pump', 'Water_Valve', 'EC', 'pH', 'H202', 'Stepper_1', 'Stepper_2', 'Stepper_3', 'Stepper_4', 'Stepper_6', 'Stepper_7', 'Weight_1', 'Weight_2', 'Weight_3', 'Weight_4', 'Weight_5', 'Weight_6', 'Weight_7']
+          ['LIGHT', 'HUMIDITY', 'CO2', 'TEMPERATURE', 'WATER_PUMP', 'WATER_LEVEL', 'WATER_TEMPERATURE', 'WATER_PRESSURE', 'MIXER', 'CIRCULATION_PUMP', 'WATER_VALVE', 'EC', 'PH', 'H202', 'STEPPER_0', 'STEPPER_1', 'STEPPER_2', 'STEPPER_3', 'STEPPER_4', 'STEPPER_6', 'WEIGHT_0', 'WEIGHT_1', 'WEIGHT_2', 'WEIGHT_3', 'WEIGHT_4', 'WEIGHT_5', 'WEIGHT_6']
       sensorIndex:
         type: number
         description: "The sensor index"
