@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package hello;
+package com.aessense.agm.sensorhistory;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,19 +28,34 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@AutoConfigureMockMvc
-public class GreetingControllerTests {
+import com.aessense.agm.sensorhistory.util.DateFormatFactory;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class SensorHistoryTests {
 
     @Autowired
     private MockMvc mockMvc;
+    
+    @Autowired
+    private DateFormatFactory dateFormatFactory;
 
-//    @Test
-    public void noParamGreetingShouldReturnDefaultMessage() throws Exception {
+    @Test
+    public void testGet() throws Exception {
+    	
+//    	Date now = new Date();
+//    	String nowString = URLEncoder.encode(this.dateFormatFactory.getDateFormat().format(now), "UTF-8");
 
-        this.mockMvc.perform(get("/greeting")).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value("Hello, World!"));
+    	String url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
+
+		String urlNoStartDate = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
+        this.mockMvc.perform(get(urlNoStartDate)).andDo(print()).andExpect(status().isBadRequest());
+        
+
+		String urlNoEndDate = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:01.0";
+        this.mockMvc.perform(get(urlNoEndDate)).andDo(print()).andExpect(status().isBadRequest());
     }
 
 //    @Test

@@ -1,4 +1,4 @@
-package com.aessense.agm.sensorhistory.model;
+package com.aessense.agm.sensorhistory.rest;
 
 import java.util.List;
 
