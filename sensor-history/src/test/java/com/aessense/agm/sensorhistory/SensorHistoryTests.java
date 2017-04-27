@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Date;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,25 +44,50 @@ public class SensorHistoryTests {
     private DateFormatFactory dateFormatFactory;
 
     @Test
-    public void testGet() throws Exception {
+    public void testGetSuccess() throws Exception {
     	
-//    	Date now = new Date();
-//    	String nowString = URLEncoder.encode(this.dateFormatFactory.getDateFormat().format(now), "UTF-8");
+    	Date now = new Date();
+    	String timestamp = this.getTimestamp(now);
 
-    	String url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
+       
+    }
 
-        url = "/v1.0/1002/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
-        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
-        
-		String urlNoStartDate = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
+    @Test
+    public void testGetMissingDates() throws Exception {
+    	
+    	Date now = new Date();
+    	String timestamp = this.getTimestamp(now);
+    	        
+		String urlNoStartDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
         this.mockMvc.perform(get(urlNoStartDate)).andDo(print()).andExpect(status().isBadRequest());
         
 
-		String urlNoEndDate = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:01.0";
+		String urlNoEndDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:01.0";
         this.mockMvc.perform(get(urlNoEndDate)).andDo(print()).andExpect(status().isBadRequest());
-    }
+    } 
+    
+    @Test
+    public void testTimestamp() throws Exception {
+    	
+    	Date now = new Date();
+    	Date overOneMinuteAgo = new Date(now.getTime() - 61000);
+    	String timestamp = this.getTimestamp(overOneMinuteAgo);
 
+    	// Expect 401 if the timestamp is too old.
+    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
+        
+        // Expect 401 if the timestamp is unparsable
+        url = "/v1.0/1001/sensorHistory?timestamp=" + "garbage" + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
+        
+        // Expect 401 if the timestamp is omitted
+        url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
+    }    
+    
 //    @Test
     public void paramGreetingShouldReturnTailoredMessage() throws Exception {
 
@@ -68,5 +95,8 @@ public class SensorHistoryTests {
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("Hello, Spring Community!"));
     }
-
+    
+    private String getTimestamp(Date d) {
+    	return this.dateFormatFactory.getDateFormat().format(d);
+    }
 }

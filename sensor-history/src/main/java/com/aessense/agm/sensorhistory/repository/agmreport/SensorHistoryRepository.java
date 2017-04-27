@@ -12,10 +12,10 @@ import com.aessense.agm.sensorhistory.model.SensorHistoryKey;
 
 public interface SensorHistoryRepository extends CrudRepository<SensorHistory, SensorHistoryKey>{
 	
-	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.type in (?2) and h.created between ?3 and ?4")
+	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.type in (?2) and h.created between ?3 and ?4 ORDER BY h.created")
 	List<SensorHistory> findByDeviceIdAndTypeBetweenStartAndEnd(int deviceId, int[] type, Date start, Date end );
 	
-	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.created between ?2 and ?3")
+	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.created between ?2 and ?3 ORDER BY h.created")
 	List<SensorHistory> findByDeviceIdBetweenStartAndEnd(int deviceId, Date start, Date end );
 	
 	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.type = ?2 and h.sensorIndex = ?3 and h.created between ?4 and ?5 ORDER BY h.created")

@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -13,6 +14,7 @@ import com.aessense.agm.sensorhistory.persistence.Tenant;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class TenantInterceptor extends HandlerInterceptorAdapter {
 	
 	private static final String CUST_ID = "customerId";
