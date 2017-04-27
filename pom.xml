@@ -31,7 +31,12 @@
 			    <groupId>org.apache.tomcat</groupId>
 			    <artifactId>tomcat-jdbc</artifactId>
 			    <version>9.0.0.M20</version>
-			</dependency>			    		
+			</dependency>	
+			<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-collections4</artifactId>
+			    <version>4.1</version>
+			</dependency>					    		
     	</dependencies>
     </dependencyManagement>
 </project>

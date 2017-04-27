@@ -47,9 +47,12 @@ public class SensorHistoryTests {
 //    	Date now = new Date();
 //    	String nowString = URLEncoder.encode(this.dateFormatFactory.getDateFormat().format(now), "UTF-8");
 
-    	String url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+    	String url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
 
+        url = "/v1.0/1002/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
+        
 		String urlNoStartDate = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
         this.mockMvc.perform(get(urlNoStartDate)).andDo(print()).andExpect(status().isBadRequest());
         

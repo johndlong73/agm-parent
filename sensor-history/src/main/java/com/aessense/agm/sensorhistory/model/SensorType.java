@@ -1,5 +1,8 @@
 package com.aessense.agm.sensorhistory.model;
 
+import org.apache.commons.collections4.map.MultiKeyMap;
+import org.springframework.util.MultiValueMap;
+
 /**
  * Enumeration to map human friendly Sensor/Actuator names to database id's and indexes.
  */
@@ -68,5 +71,15 @@ public enum SensorType {
 	
 	public int getIndex() {
 		return this.index;
+	}
+	
+	public static SensorType fromValues(int id, int index) {
+		SensorType result = null;
+		for(SensorType s: SensorType.values()) {
+			if(s.getId() == id && s.getIndex() == index) {
+				result = s;
+			}
+		}
+		return result;
 	}
 }

@@ -1,6 +1,7 @@
 package com.aessense.agm.sensorhistory.action;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,11 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.aessense.agm.sensorhistory.model.SensorHistory;
+import com.aessense.agm.sensorhistory.model.SensorType;
 import com.aessense.agm.sensorhistory.repository.agmreport.SensorHistoryRepository;
 import com.aessense.agm.sensorhistory.rest.GetSensorHistoryRequest;
 import com.aessense.agm.sensorhistory.rest.RestResponse;
 import com.aessense.agm.sensorhistory.rest.SensorHistoryDto;
-import com.aessense.agm.sensorhistory.util.SensorTypeHelper;
 
 @Component
 public class GetSensorHistoryAction {
@@ -27,14 +28,19 @@ public class GetSensorHistoryAction {
 	
 	public ResponseEntity doAction(GetSensorHistoryRequest input, HttpServletRequest request, HttpServletResponse response) {
 		
-		int[] devices = SensorTypeHelper.enumListToIntArrayOfIds(input.getSensorTypes());
+		int deviceId = input.getDeviceId();
+		Date start = input.getStartDate();
+		Date end = input.getEndDate();
 		
 		List<SensorHistory> sensorHistoryList;
 		
-		if(devices.length == 0) {
+		if(input.getSensorTypes().isEmpty()) {
 			sensorHistoryList = sensorHistoryRepository.findByDeviceIdBetweenStartAndEnd(input.getDeviceId(), input.getStartDate(), input.getEndDate());
 		} else {
-			sensorHistoryList = sensorHistoryRepository.findByDeviceIdAndTypeBetweenStartAndEnd(input.getDeviceId(), devices, input.getStartDate(), input.getEndDate()); 
+			sensorHistoryList = new ArrayList<>();
+			for(SensorType t: input.getSensorTypes()) {
+				sensorHistoryList.addAll(sensorHistoryRepository.findByDeviceIdAndTypeAndIndexBetweenStartAndEnd(deviceId, t.getId(), t.getIndex(), start, end));
+			} 
 		}
 		
 		RestResponse<SensorHistoryDto> restResponse = new RestResponse<>();
@@ -46,7 +52,7 @@ public class GetSensorHistoryAction {
 					.createdAt(h.getCreated())
 					.deviceId(h.getDeviceId())
 					.sensorIndex(h.getSensorIndex())
-					.sensorType(h.getType())
+					.sensorType(SensorType.fromValues(h.getType(), h.getSensorIndex()).name())
 					.target(h.getTarget())
 					.value(h.getValue())
 					.build());

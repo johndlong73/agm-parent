@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.aessense.agm.sensorhistory.model.SensorHistory;
+import com.aessense.agm.sensorhistory.model.SensorType;
+import com.aessense.agm.sensorhistory.persistence.Tenant;
 import com.aessense.agm.sensorhistory.util.AppConstants;
 
 @RunWith(SpringRunner.class)
@@ -33,7 +35,12 @@ public class SensorHistoryRepositoryTest {
 		Date start = this.formatter.parse("2017-04-16T17:00:01.0");
 		Date end = this.formatter.parse("2017-04-16T18:00:00.0");
 		
+		Tenant.setTenantId("1001");
+		
 		List<SensorHistory> data = this.repo.findByDeviceIdAndTypeBetweenStartAndEnd(206, devices, start, end);
-		assertNotEquals(0, data.size());		
+		assertFalse(data.isEmpty());
+		
+		data = this.repo.findByDeviceIdAndTypeAndIndexBetweenStartAndEnd(206, SensorType.WEIGHT_4.getId(), SensorType.WEIGHT_4.getIndex(), start, end);
+		assertFalse(data.isEmpty());
 	}
 }

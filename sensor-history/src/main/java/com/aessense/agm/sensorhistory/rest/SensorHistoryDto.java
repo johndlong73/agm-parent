@@ -13,7 +13,7 @@ import lombok.Data;
 @Builder
 public class SensorHistoryDto {
 	private int deviceId;
-	private int sensorType;
+	private String sensorType;
 	private int sensorIndex;
 	private BigDecimal target;
 	private BigDecimal value;

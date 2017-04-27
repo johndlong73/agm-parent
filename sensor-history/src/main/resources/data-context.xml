@@ -40,7 +40,7 @@
 	</bean>
 	
 	<bean id="sensorHistoryDataSource" class="com.aessense.agm.sensorhistory.persistence.CustomRoutingDataSource">
-		<property name="defaultTargetDataSource" ref="customerDataSource1001" />
+		<property name="defaultTargetDataSource" ref="agmcontroldb" />
 		<property name="targetDataSources">
 			<map>
 				<entry key="customerDataSource1001">
