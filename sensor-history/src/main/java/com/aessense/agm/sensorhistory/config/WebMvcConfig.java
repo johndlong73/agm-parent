@@ -25,6 +25,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(this.timestampInterceptor);
 		registry.addInterceptor(this.tenantInterceptor);
-		//registry.addInterceptor(this.tokenInterceptor);
+		registry.addInterceptor(this.tokenInterceptor);
 	}
 }

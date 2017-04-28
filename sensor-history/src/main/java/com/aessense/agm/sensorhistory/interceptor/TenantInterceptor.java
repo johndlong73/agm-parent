@@ -29,13 +29,12 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		
+		log.debug("TenantInterceptor.preHandle() called.");
 		@SuppressWarnings("unchecked")
 		Map<String, Object> pathVars = (Map<String, Object>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		
 		if( pathVars.containsKey(CUST_ID)) {
 			String customerId = (String) pathVars.get(CUST_ID);
-			log.info("Setting tentant to: {}", customerId);
 			Tenant.setTenantId(customerId); 
 		}
 		return true;
