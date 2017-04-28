@@ -48,9 +48,9 @@ Where 0.1.0 is the version of the jar.
 ## How to test
 
 Test SensorHistory:
-Using your favorite REST client do HTTP GET http://localhost:8090/v1.0/c00001/sensorHistory?deviceId=1234
+Using your favorite REST client do HTTP GET http://localhost:8090/v1.0/1001/sensorHistory?timestamp=${long}&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000
 
-You should get a small collection of sensor data that has been mocked up.
+You should get a small collection of sensor data.
 
 Test msr:
 Using your web browser hit http://localhsot:8080/getReport

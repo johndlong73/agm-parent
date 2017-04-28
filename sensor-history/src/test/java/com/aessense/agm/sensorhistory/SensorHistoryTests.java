@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 
 import org.junit.Test;
@@ -50,11 +51,11 @@ public class SensorHistoryTests {
     @Test
     public void testGetSuccess() throws Exception {
     	
-    	Date now = new Date();
-    	String timestamp = this.getTimestamp(now);
+    	long timestamp = new Date().getTime();
     	String token = this.generateToken(CUSTOMER_1001, timestamp);
 
-    	String url = "/v1.0/" + CUSTOMER_1001 + "/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+    	// /v1.0/1001/sensorHistory?timestamp=(long value)&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+    	String url = "/v1.0/" + CUSTOMER_1001 + "/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
        
     }
@@ -62,13 +63,12 @@ public class SensorHistoryTests {
     @Test
     public void testGetMissingDates() throws Exception {
     	
-    	Date now = new Date();
-    	String timestamp = this.getTimestamp(now);
+    	long timestamp = new Date().getTime();
+    	String token = this.generateToken(CUSTOMER_1001, timestamp);
     	        
 		String urlNoStartDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
         this.mockMvc.perform(get(urlNoStartDate)).andDo(print()).andExpect(status().isBadRequest());
         
-
 		String urlNoEndDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:01.0";
         this.mockMvc.perform(get(urlNoEndDate)).andDo(print()).andExpect(status().isBadRequest());
     } 
@@ -76,20 +76,28 @@ public class SensorHistoryTests {
     @Test
     public void testTimestamp() throws Exception {
     	
-    	Date now = new Date();
-    	Date overOneMinuteAgo = new Date(now.getTime() - 61000);
-    	String timestamp = this.getTimestamp(overOneMinuteAgo);
+    	long timestamp = new Date().getTime() - 61000;
 
     	// Expect 401 if the timestamp is too old.
-    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
+        
+        // Expect 200 if the timestamp is less than 5 seconds into the future
+        timestamp = new Date().getTime() + 4500;
+        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
+        
+        // Expect 401 if the timestamp is too far into the future (more than about 5 seconds).
+        timestamp = new Date().getTime() + 6000;
+        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
         
         // Expect 401 if the timestamp is unparsable
-        url = "/v1.0/1001/sensorHistory?timestamp=" + "garbage" + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+        url = "/v1.0/1001/sensorHistory?timestamp=" + "garbage" + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
         
         // Expect 401 if the timestamp is omitted
-        url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+        url = "/v1.0/1001/sensorHistory?deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
     }    
     
@@ -105,11 +113,12 @@ public class SensorHistoryTests {
     	return this.dateFormatFactory.getDateFormat().format(d);
     }
     
-    private String generateToken(String customerId, String timestamp) throws Exception {
+    private String generateToken(String customerId, long timestamp) throws Exception {
     	String hashSource = "AGM"+ customerId + timestamp;
     	MessageDigest digester = MessageDigest.getInstance("MD5");
 		byte[] digest = digester.digest(hashSource.getBytes());		
-		String digestString = new String(digest);
+		byte[] b64Bytes = Base64.getUrlEncoder().encode(digest);
+		String token = new String(b64Bytes);
 		return "token";
     }
 }

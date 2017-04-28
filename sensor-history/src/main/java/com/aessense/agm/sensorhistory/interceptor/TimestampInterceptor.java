@@ -40,21 +40,21 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 			return false;			
 		}
 		
-		Date timestamp = null;
-		
+		long timestamp;
+
 		// If the timestamp won't parse then return 401
 		try {
-			timestamp = dateFormatter.getDateFormat().parse(timestampParam);
+			timestamp = Long.parseLong(timestampParam);
 		} catch(Exception e) {
 			response.sendError(HttpStatus.UNAUTHORIZED.value());
 			return false;
 		}
 		
-		Date now = new Date();
-		long delta = now.getTime() - timestamp.getTime();
+		long now = new Date().getTime();
+		long delta = now - timestamp;
 		
 		// If the timestamp is older than one minute then return 401
-		if(delta > ONE_MINUTE) {
+		if(delta > ONE_MINUTE || delta < -5000 ) {
 			response.sendError(HttpStatus.UNAUTHORIZED.value());
 			return false;
 		} else {

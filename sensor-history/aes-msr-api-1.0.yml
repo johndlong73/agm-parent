@@ -21,7 +21,7 @@ paths:
       parameters:
         - name: timestamp
           in: query
-          description: The timestamp of the request in GMT.  This service will return error code 401 if the timestamp is greater than one minute old.
+          description: The timestamp of the request in the number of milliseconds that have elapsed since January 1, 1970, 00:00:00 GMT.  This service will return error code 401 if the timestamp is greater than one minute old.
           required: true
           type: number
         - name: token
