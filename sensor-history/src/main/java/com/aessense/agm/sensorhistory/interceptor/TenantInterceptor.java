@@ -13,6 +13,13 @@ import com.aessense.agm.sensorhistory.persistence.Tenant;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Using the customerId query parameter, set the current tenant.  Critical part 
+ * of the database multitenant solution.
+ * 
+ * @author John Long
+ *
+ */
 @Slf4j
 @Component
 public class TenantInterceptor extends HandlerInterceptorAdapter {

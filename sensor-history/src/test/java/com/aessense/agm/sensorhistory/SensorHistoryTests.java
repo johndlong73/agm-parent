@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import org.junit.Test;
@@ -42,14 +44,17 @@ public class SensorHistoryTests {
     
     @Autowired
     private DateFormatFactory dateFormatFactory;
+    
+    public static final String CUSTOMER_1001 = "1001";
 
     @Test
     public void testGetSuccess() throws Exception {
     	
     	Date now = new Date();
     	String timestamp = this.getTimestamp(now);
+    	String token = this.generateToken(CUSTOMER_1001, timestamp);
 
-    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
+    	String url = "/v1.0/" + CUSTOMER_1001 + "/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
        
     }
@@ -98,5 +103,13 @@ public class SensorHistoryTests {
     
     private String getTimestamp(Date d) {
     	return this.dateFormatFactory.getDateFormat().format(d);
+    }
+    
+    private String generateToken(String customerId, String timestamp) throws Exception {
+    	String hashSource = "AGM"+ customerId + timestamp;
+    	MessageDigest digester = MessageDigest.getInstance("MD5");
+		byte[] digest = digester.digest(hashSource.getBytes());		
+		String digestString = new String(digest);
+		return "token";
     }
 }

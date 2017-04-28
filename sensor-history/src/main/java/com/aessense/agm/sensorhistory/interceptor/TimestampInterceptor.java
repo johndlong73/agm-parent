@@ -13,6 +13,14 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.aessense.agm.sensorhistory.util.DateFormatFactory;
 
+/**
+ * Replay prevention mechanism.  Validates that the timestamp sent in the timestamp
+ * query parameter is less than one minute old otherwise makes the app return
+ * UNAUTHORIZED
+ * 
+ * @author John Long
+ *
+ */
 @Component
 public class TimestampInterceptor extends HandlerInterceptorAdapter {
 	
