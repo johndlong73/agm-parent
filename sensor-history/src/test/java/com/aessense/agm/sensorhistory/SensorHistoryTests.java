@@ -33,6 +33,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import com.aessense.agm.sensorhistory.config.AppConfig;
 import com.aessense.agm.sensorhistory.util.DateFormatFactory;
@@ -56,6 +57,9 @@ public class SensorHistoryTests {
     private AppConfig appConfig;
     
     public static final String CUSTOMER_1001 = "1001";
+    public static final ResultMatcher OK = status().isOk();
+	public static final ResultMatcher FORBIDDEN = status().isForbidden();
+	public static final ResultMatcher UNAUTHORIZED = status().isUnauthorized();
 
     @Test
     public void testGetSuccess() throws Exception {
@@ -114,12 +118,13 @@ public class SensorHistoryTests {
 	        this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
     	}
     }    
-    
-//    @Test
+
+    /*
+    @Test
     public void paramGreetingShouldReturnTailoredMessage() throws Exception {
 
         this.mockMvc.perform(get("/greeting").param("name", "Spring Community"))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").value("Hello, Spring Community!"));
-    }
+    }*/
 }
