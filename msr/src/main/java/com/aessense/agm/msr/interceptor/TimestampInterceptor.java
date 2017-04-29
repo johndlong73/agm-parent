@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.msr.exception.UnauthorizedException;
 import com.aessense.agm.msr.util.DateFormatFactory;
 
 /**
@@ -36,8 +37,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		
 		// If the timestamp query param is missing or blank then return 401
 		if(StringUtils.isEmpty(timestampParam)) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;			
+			throw new UnauthorizedException("Missing required request parameter: timestamp");			
 		}
 		
 		long timestamp;
@@ -46,8 +46,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		try {
 			timestamp = Long.parseLong(timestampParam);
 		} catch(Exception e) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException("Invalid value for request parameter: timestamp");
 		}
 		
 		long now = new Date().getTime();
@@ -55,8 +54,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		
 		// If the timestamp is older than one minute then return 401
 		if(delta > ONE_MINUTE || delta < -5000 ) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException("Timestamp is out of range");
 		} else {
 			return true;
 		}

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.msr.exception.UnauthorizedException;
 import com.aessense.agm.msr.util.TokenFactory;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +37,12 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 		
 		String customerId = request.getParameter("customerID");
 		if(StringUtils.isEmpty(customerId)) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException("Missing required request parameter: customerID");
 		}
 		
 		String token = request.getParameter("token");
 		if(StringUtils.isEmpty(token)) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException("Missing required request parameter: token");
 		}
 		
 		token = this.decodeToken(token);
@@ -55,8 +54,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 		if(token.equals(digestString)) {
 			return true;
 		} else {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;			
+			throw new UnauthorizedException("Invalid token");			
 		}
 	}
 	
