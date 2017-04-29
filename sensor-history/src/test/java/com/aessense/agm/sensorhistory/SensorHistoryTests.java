@@ -59,8 +59,8 @@ public class SensorHistoryTests {
     	long timestamp = new Date().getTime();
     	String token = this.tokenFactory.generateUrlSafeToken(CUSTOMER_1001, timestamp);
 
-    	// /v1.0/1001/sensorHistory?timestamp=(long value)&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T21:00:00.000";
-    	String url = "/v1.0/" + CUSTOMER_1001 + "/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+    	// /v1.0/1001/sensorHistory?timestamp=(long value)&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T21:00:00.000";
+    	String url = "/v1.0/" + CUSTOMER_1001 + "/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
        
     }
@@ -74,7 +74,7 @@ public class SensorHistoryTests {
 		String urlNoStartDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&endDate=2017-04-19T16:59:55.0";
         this.mockMvc.perform(get(urlNoStartDate)).andDo(print()).andExpect(status().isBadRequest());
         
-		String urlNoEndDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:01.0";
+		String urlNoEndDate = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_0,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:01.0";
         this.mockMvc.perform(get(urlNoEndDate)).andDo(print()).andExpect(status().isBadRequest());
     } 
     
@@ -85,27 +85,27 @@ public class SensorHistoryTests {
     	String token = this.tokenFactory.generateUrlSafeToken(CUSTOMER_1001, timestamp);
 
     	// Expect 401 if the timestamp is too old.
-    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+    	String url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
         
         // Expect 200 if the timestamp is less than 5 seconds into the future
         timestamp = new Date().getTime() + 4500;
         token = this.tokenFactory.generateUrlSafeToken(CUSTOMER_1001, timestamp);
-        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isOk());
         
         // Expect 401 if the timestamp is too far into the future (more than about 5 seconds).
         timestamp = new Date().getTime() + 6000;
         token = this.tokenFactory.generateUrlSafeToken(CUSTOMER_1001, timestamp);
-        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        url = "/v1.0/1001/sensorHistory?timestamp=" + timestamp + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
         
         // Expect 401 if the timestamp is unparsable
-        url = "/v1.0/1001/sensorHistory?timestamp=" + "garbage" + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        url = "/v1.0/1001/sensorHistory?timestamp=" + "garbage" + "&token=" + token + "&deviceId=206&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
         
         // Expect 401 if the timestamp is omitted
-        url = "/v1.0/1001/sensorHistory?deviceId=206" + "&token=" + token + "&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-16T17:00:00.000&endDate=2017-04-16T18:00:00.000";
+        url = "/v1.0/1001/sensorHistory?deviceId=206" + "&token=" + token + "&sensorTypes=WEIGHT_4,TOTAL_CONDUCTIVITY&startDate=2017-04-17T17:00:00.000&endDate=2017-04-17T18:00:00.000";
         this.mockMvc.perform(get(url)).andDo(print()).andExpect(status().isUnauthorized());
     }    
     
