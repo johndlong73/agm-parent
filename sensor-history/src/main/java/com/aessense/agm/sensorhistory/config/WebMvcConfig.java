@@ -14,6 +14,7 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.aessense.agm.sensorhistory.interceptor.ModulePermissionsInterceptor;
 import com.aessense.agm.sensorhistory.interceptor.TenantInterceptor;
 import com.aessense.agm.sensorhistory.interceptor.TimestampInterceptor;
 import com.aessense.agm.sensorhistory.interceptor.TokenInterceptor;
@@ -34,6 +35,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebApplicat
 	private TokenInterceptor tokenInterceptor;
 	
 	@Autowired
+	private ModulePermissionsInterceptor permissionInterceptor;
+	
+	@Autowired
 	private AppConfig config;
 
 	@Override
@@ -47,6 +51,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebApplicat
 		if(this.config.isTokenSecurityEnabled()) {
 			registry.addInterceptor(this.tokenInterceptor);
 		}
+		
+		registry.addInterceptor(this.permissionInterceptor);
 	}
 
 	@Override
