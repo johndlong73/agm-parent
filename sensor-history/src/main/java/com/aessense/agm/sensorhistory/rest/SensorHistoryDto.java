@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.aessense.agm.sensorhistory.config.ConfigConstants;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SensorHistoryDto {
 	private int deviceId;
 	private String sensorType;

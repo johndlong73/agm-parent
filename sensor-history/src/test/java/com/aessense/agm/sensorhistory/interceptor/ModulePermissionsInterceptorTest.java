@@ -1,6 +1,5 @@
 package com.aessense.agm.sensorhistory.interceptor;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.aessense.agm.sensorhistory.exception.ForbiddenException;
 import com.aessense.agm.sensorhistory.model.ModulePermission;
 import com.aessense.agm.sensorhistory.model.ModuleType;
 import com.aessense.agm.sensorhistory.persistence.Tenant;
@@ -44,14 +44,18 @@ public class ModulePermissionsInterceptorTest {
 	}
 
 	@Test
-	public void test() throws Exception {
+	public void testPermissionEnabled() throws Exception {
 		
 		Tenant.setTenantId(ENABLED_CUST.toString());
 		boolean result = this.interceptor.preHandle(request, response, null);
 		assertTrue(result);
+	}
+	
+	@Test(expected=ForbiddenException.class)
+	public void testPermissionDisabled() throws Exception {
+
 		Tenant.setTenantId(DISABLED_CUST.toString());
-		result = this.interceptor.preHandle(request, response, null);
-		assertFalse(result);
+		boolean result = this.interceptor.preHandle(request, response, null);
 	}
 
 	private void setupPerms() {
