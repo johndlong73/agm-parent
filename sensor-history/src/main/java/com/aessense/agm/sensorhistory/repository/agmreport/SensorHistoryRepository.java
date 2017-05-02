@@ -10,6 +10,11 @@ import org.springframework.data.repository.CrudRepository;
 import com.aessense.agm.sensorhistory.model.SensorHistory;
 import com.aessense.agm.sensorhistory.model.SensorHistoryKey;
 
+/**
+ * The repository for performing CRUD operations on SensorHistory.
+ * @author John Long
+ *
+ */
 public interface SensorHistoryRepository extends CrudRepository<SensorHistory, SensorHistoryKey>{
 	
 	@Query("select h from SensorHistory h where h.deviceId = ?1 and h.type in (?2) and h.created between ?3 and ?4 ORDER BY h.created")

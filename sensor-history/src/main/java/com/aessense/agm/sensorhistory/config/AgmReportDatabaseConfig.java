@@ -17,6 +17,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.aessense.agm.sensorhistory.persistence.CustomRoutingDataSource;
 
 
+/**
+ * Configure JPA for the sensor history database.  This database is multitenant.
+ * @author John Long
+ *
+ */
 @Configuration
 @EnableJpaRepositories(basePackages = "com.aessense.agm.sensorhistory.repository.agmreport", entityManagerFactoryRef = "sensorHistoryEntityManagerFactory")
 @EnableTransactionManagement

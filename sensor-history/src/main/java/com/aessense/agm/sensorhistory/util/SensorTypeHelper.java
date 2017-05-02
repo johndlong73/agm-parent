@@ -5,6 +5,11 @@ import java.util.List;
 
 import com.aessense.agm.sensorhistory.model.SensorType;
 
+/**
+ * Utility class for working with SensorType enums.
+ * @author John Long
+ *
+ */
 public class SensorTypeHelper {
 	
 	private SensorTypeHelper() {

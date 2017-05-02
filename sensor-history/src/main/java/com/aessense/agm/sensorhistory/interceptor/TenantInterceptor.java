@@ -14,7 +14,7 @@ import com.aessense.agm.sensorhistory.persistence.Tenant;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Using the customerId query parameter, set the current tenant.  Critical part 
+ * Using the customerId path parameter, set the current tenant.  Critical part 
  * of the database multitenant solution.
  * 
  * @author John Long
@@ -30,13 +30,17 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		log.debug("TenantInterceptor.preHandle() called.");
+		
+		// parse the request
 		@SuppressWarnings("unchecked")
 		Map<String, Object> pathVars = (Map<String, Object>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		
+		// store the tenant id
 		if( pathVars.containsKey(CUST_ID)) {
 			String customerId = (String) pathVars.get(CUST_ID);
 			Tenant.setTenantId(customerId); 
 		}
+		
 		return true;
 	}
 }

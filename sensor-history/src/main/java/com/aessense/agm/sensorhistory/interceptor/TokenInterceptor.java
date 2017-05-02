@@ -36,19 +36,23 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
+		// Get the token request parameter.
 		String token = request.getParameter("token");
 		if(StringUtils.isEmpty(token)) {
 			response.sendError(HttpStatus.UNAUTHORIZED.value());
 			return false;
 		}
 		
+		// Decode the token
 		token = this.decodeToken(token);
 		
+		// Generate a raw token to compare against incoming token
 		long timestamp = Long.parseLong(request.getParameter("timestamp"));
 		String customerId = Tenant.getTenantId();
 		byte[] digest = this.tokenFactory.generateRawToken(customerId, timestamp);
 		String digestString = new String(digest);
 		
+		// Incoming token is valid if it matches raw token generated in this code.
 		if(token.equals(digestString)) {
 			return true;
 		} else {
@@ -66,11 +70,14 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 		String decodedToken = null;
 		
 		try {
+			// Remove URL encoding.
 			decodedToken = URLDecoder.decode(token, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			log.error("Could not URL Decode token.");
+			// This should ever happen
+			log.error("Could not URL Decode token.", e);
 		}
 		
+		// Remove Base64 encoding
 		decodedToken = new String(Base64.getDecoder().decode(decodedToken));
 		return decodedToken;
 	}

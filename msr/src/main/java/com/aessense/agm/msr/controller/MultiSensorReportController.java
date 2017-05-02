@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.aessense.agm.msr.action.GetMultiSensorReportAction;
 
+/**
+ * Controller for the getReport endpoint.
+ * @author John Long
+ *
+ */
 @Controller
 public class MultiSensorReportController {
 

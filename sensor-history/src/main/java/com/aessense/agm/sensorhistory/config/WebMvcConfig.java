@@ -21,9 +21,14 @@ import com.aessense.agm.sensorhistory.interceptor.TokenInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Configure spring WebMvc.
+ * @author John Long
+ *
+ */
 @Slf4j
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebApplicationInitializer {
+public class WebMvcConfig extends WebMvcConfigurerAdapter{
 	
 	@Autowired
 	private TimestampInterceptor timestampInterceptor;
@@ -40,6 +45,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebApplicat
 	@Autowired
 	private AppConfig config;
 
+	/**
+	 * Wire up interceptors which perform security checks.
+	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		if(this.config.isTimestampSecurityEnabled()) {
@@ -53,24 +61,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebApplicat
 		}
 		
 		registry.addInterceptor(this.permissionInterceptor);
-	}
-
-	@Override
-	public void onStartup(ServletContext servletContext) throws ServletException {
-        // can be set runtime before Spring instantiates any beans
-        // TimeZone.setDefault(TimeZone.getTimeZone("GMT+00:00"))
-		log.info("Setting default timezone to UTC");
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));    
-
-        // cannot override encoding in Spring at runtime as some strings have already been read
-        // however, we can assert and ensure right values are loaded here
-
-        // verify system property is set
-        Assert.isTrue(ConfigConstants.FILE_ENCODING.equals(System.getProperty("file.encoding")), "Error: file.encoding property must be " + ConfigConstants.FILE_ENCODING);;
-
-        // and actually verify it is being used
-        Charset charset = Charset.defaultCharset();
-        Assert.isTrue(charset.equals(Charset.forName(ConfigConstants.FILE_ENCODING)),"");
-		
 	}
 }

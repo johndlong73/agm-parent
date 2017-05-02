@@ -54,6 +54,8 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		long delta = now - timestamp;
 		
 		// If the timestamp is older than one minute then return 401
+		// allow timestamp to be 5 seconds into the future to allow for 
+		// clock misalignment.
 		if(delta > ONE_MINUTE || delta < -5000 ) {
 			response.sendError(HttpStatus.UNAUTHORIZED.value());
 			return false;

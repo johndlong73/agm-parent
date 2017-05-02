@@ -9,6 +9,11 @@ import com.aessense.agm.sensorhistory.model.SensorType;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Pojo for encapsulating sensor history request arguments.
+ * @author John Long
+ *
+ */
 @Data
 @Builder
 public class GetSensorHistoryRequest {

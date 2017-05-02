@@ -6,6 +6,13 @@ import java.util.Base64;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * An autowireable class for generating tokens for use with the token
+ * security feature.
+ * 
+ * @author John Long
+ *
+ */
 @Component
 public class TokenFactory {
 
