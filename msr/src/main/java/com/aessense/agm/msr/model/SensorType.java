@@ -70,6 +70,12 @@ public enum SensorType {
 		return this.index;
 	}
 	
+	/**
+	 * Given a sensor id and sensor index return the matching enum.
+	 * @param id the sensory id
+	 * @param index the sensor index
+	 * @return
+	 */
 	public static SensorType fromValues(int id, int index) {
 		SensorType result = null;
 		for(SensorType s: SensorType.values()) {

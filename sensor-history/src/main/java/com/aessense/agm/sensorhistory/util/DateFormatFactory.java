@@ -2,28 +2,26 @@ package com.aessense.agm.sensorhistory.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
 
 import com.aessense.agm.sensorhistory.config.ConfigConstants;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
+/**
+ * Autowireable factory for getting a date formatter.  Makes date formatting
+ * uniform throughout the application.
+ * 
+ * @author John Long
+ *
+ */
 @Component
 public class DateFormatFactory {
 
 	private SimpleDateFormat formatter = new SimpleDateFormat(ConfigConstants.DATE_FORMAT, Locale.US);
 	
-	@PostConstruct
-	private void setTimeZone() {
-		log.info("Setting timezone for date formatter: " + TimeZone.getTimeZone("UTC"));
-		this.formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-	}
-	
+	/**
+	 * Returns a date formatter.
+	 */
 	public SimpleDateFormat getDateFormat() {
 		return this.formatter;
 	}

@@ -16,6 +16,12 @@ import com.aessense.agm.msr.model.ModulePermission;
 import com.aessense.agm.msr.model.ModuleType;
 import com.aessense.agm.msr.repository.agmcontrol.ModulePermissionRepository;
 
+/**
+ * Verifies that the customer has permission to get sensory history.  Returns
+ * HTTP forbidden if not permitted.
+ * @author John Long
+ *
+ */
 @Component
 public class ModulePermissionsInterceptor extends HandlerInterceptorAdapter {
 

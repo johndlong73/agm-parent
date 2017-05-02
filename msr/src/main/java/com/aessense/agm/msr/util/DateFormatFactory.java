@@ -12,17 +12,18 @@ import com.aessense.agm.msr.config.ConfigConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Autowireable factory for getting a date formatter.  Makes date formatting
+ * uniform throughout the application.
+ * 
+ * @author John Long
+ *
+ */
 @Slf4j
 @Component
 public class DateFormatFactory {
 
 	private SimpleDateFormat formatter = new SimpleDateFormat(ConfigConstants.DATE_FORMAT, Locale.US);
-	
-	@PostConstruct
-	private void setTimeZone() {
-		log.info("Setting timezone for date formatter: " + TimeZone.getTimeZone("UTC"));
-		this.formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-	}
 	
 	public SimpleDateFormat getDateFormat() {
 		return this.formatter;

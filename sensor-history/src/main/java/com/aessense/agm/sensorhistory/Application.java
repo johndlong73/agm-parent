@@ -8,6 +8,11 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Main application class
+ * @author John Long
+ *
+ */
 @Slf4j
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class Application {

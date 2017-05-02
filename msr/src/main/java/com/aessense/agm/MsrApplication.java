@@ -4,6 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
+/**
+ * Main application class
+ * @author John Long
+ *
+ */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class MsrApplication {
 

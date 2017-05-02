@@ -10,6 +10,11 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
+/**
+ * Entity for agm_module_permissions table.
+ * @author John Long
+ *
+ */
 @Data
 @Entity
 @Table(name="agm_module_permissions", schema="agmadmin")

@@ -16,7 +16,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.aessense.agm.sensorhistory.persistence.CustomRoutingDataSource;
 
-
+/**
+ * Configure JPA for the agmcontrol database.  
+ * @author John Long
+ *
+ */
 @Configuration
 @EnableJpaRepositories("com.aessense.agm.sensorhistory.repository.agmcontrol")
 @EnableTransactionManagement

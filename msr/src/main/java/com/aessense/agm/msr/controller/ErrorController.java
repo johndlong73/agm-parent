@@ -9,6 +9,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.aessense.agm.msr.exception.ForbiddenException;
 import com.aessense.agm.msr.exception.UnauthorizedException;
 
+/**
+ * Controller for handling errors.  Allows for custom
+ * error pages and messages.
+ * 
+ * @author John Long
+ *
+ */
 @ControllerAdvice
 public class ErrorController {
 

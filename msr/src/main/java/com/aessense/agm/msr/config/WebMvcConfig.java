@@ -11,6 +11,11 @@ import com.aessense.agm.msr.interceptor.TokenInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Configure spring WebMvc.
+ * @author John Long
+ *
+ */
 @Slf4j
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {

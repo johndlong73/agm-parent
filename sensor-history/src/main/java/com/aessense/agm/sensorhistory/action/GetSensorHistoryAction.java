@@ -20,6 +20,11 @@ import com.aessense.agm.sensorhistory.rest.GetSensorHistoryRequest;
 import com.aessense.agm.sensorhistory.rest.RestResponse;
 import com.aessense.agm.sensorhistory.rest.SensorHistoryDto;
 
+/**
+ * Retrieves sensor history data and returns it to the user.
+ * @author John Long
+ *
+ */
 @Component
 public class GetSensorHistoryAction {
 	
@@ -34,18 +39,23 @@ public class GetSensorHistoryAction {
 		
 		List<SensorHistory> sensorHistoryList;
 		
+		// Run the query, based on whether sensorTypes are filtered or not.
 		if(input.getSensorTypes().isEmpty()) {
 			sensorHistoryList = sensorHistoryRepository.findByDeviceIdBetweenStartAndEnd(input.getDeviceId(), input.getStartDate(), input.getEndDate());
 		} else {
 			sensorHistoryList = new ArrayList<>();
+			// Run query for each sensorType.  This can be made into one query by using Criteria queries.
+			// Ran out of time to get Criteria queries working.
 			for(SensorType t: input.getSensorTypes()) {
 				sensorHistoryList.addAll(sensorHistoryRepository.findByDeviceIdAndTypeAndIndexBetweenStartAndEnd(deviceId, t.getId(), t.getIndex(), start, end));
 			} 
 		}
 		
+		// Prepare to transform database Entity into rest entity
 		RestResponse<SensorHistoryDto> restResponse = new RestResponse<>();
 		List<SensorHistoryDto> dataList = new ArrayList<>();
 
+		// Transform database entities into rest entities
 		for(SensorHistory h : sensorHistoryList) {
 			dataList.add(
 				SensorHistoryDto.builder()
@@ -58,11 +68,13 @@ public class GetSensorHistoryAction {
 					.build());
 		}
 		
+		// Populate the rest envelope class
 		restResponse.setData(dataList);
 		restResponse.setCount(dataList.size());
 
+		// Return the rest response.
 		return ResponseEntity.status(HttpStatus.OK)
-		.contentType(MediaType.APPLICATION_JSON_UTF8)
-        .body(restResponse);		
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.body(restResponse);		
 	}
 }

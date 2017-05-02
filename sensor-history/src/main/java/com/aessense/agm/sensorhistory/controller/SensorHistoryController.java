@@ -21,6 +21,11 @@ import com.aessense.agm.sensorhistory.config.ConfigConstants;
 import com.aessense.agm.sensorhistory.rest.GetSensorHistoryRequest;
 import com.aessense.agm.sensorhistory.util.SensorTypeHelper;
 
+/**
+ * Endpoint for sensor history data.
+ * @author John Long
+ *
+ */
 @RestController
 public class SensorHistoryController {
 
@@ -35,7 +40,7 @@ public class SensorHistoryController {
 			@RequestParam(required=true) @DateTimeFormat(pattern=ConfigConstants.DATE_FORMAT) Date endDate, 
 			HttpServletRequest request, HttpServletResponse response) {
 
-
+		// Bundle up arguments into a bean to send to the action class.
 		GetSensorHistoryRequest restRequest = GetSensorHistoryRequest.builder()
 				.customerId(customerId)
 				.deviceId(deviceId)
@@ -44,8 +49,7 @@ public class SensorHistoryController {
 				.endDate(endDate)
 				.build();
 
-
-		return this.getSensorHistoryAction.doAction(restRequest, request, response);
-		
+		// Call the action class and return the result.
+		return this.getSensorHistoryAction.doAction(restRequest, request, response);		
 	}
 }

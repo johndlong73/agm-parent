@@ -5,6 +5,11 @@ import java.util.Date;
 
 import lombok.Data;
 
+/**
+ * Custom key for sensor history since it has no natural primary key.
+ * @author jlon14
+ *
+ */
 @Data
 public class SensorHistoryKey implements Serializable {
 	private int deviceId;

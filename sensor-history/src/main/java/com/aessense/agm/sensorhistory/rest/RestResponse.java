@@ -2,6 +2,11 @@ package com.aessense.agm.sensorhistory.rest;
 
 import java.util.List;
 
+/**
+ * Pojo for encapsulating rest response envelope.
+ * @author John Long
+ *
+ */
 public class RestResponse<T> {
 	private long count;
 	private List<T> data;

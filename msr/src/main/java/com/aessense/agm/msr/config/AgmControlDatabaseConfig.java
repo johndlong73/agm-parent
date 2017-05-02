@@ -14,7 +14,11 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
+/**
+ * Configure JPA.
+ * @author John Long
+ *
+ */
 @Configuration
 @EnableJpaRepositories("com.aessense.agm.msr.repository.agmcontrol")
 @EnableTransactionManagement

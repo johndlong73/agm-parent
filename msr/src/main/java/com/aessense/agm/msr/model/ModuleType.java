@@ -1,5 +1,10 @@
 package com.aessense.agm.msr.model;
 
+/**
+ * Enumeration of agm modules.
+ * @author John Long
+ *
+ */
 public enum ModuleType {
 	MULTI_SENSOR_REPORT (1l);
 	

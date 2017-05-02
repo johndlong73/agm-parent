@@ -12,6 +12,11 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
+/**
+ * Entity for sensor_history table.
+ * @author John Long
+ *
+ */
 @Data
 @Entity
 @IdClass(SensorHistoryKey.class)

@@ -1,5 +1,10 @@
 package com.aessense.agm.sensorhistory.config;
 
+/**
+ * Global constants
+ * @author John Long
+ *
+ */
 public class ConfigConstants {
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
