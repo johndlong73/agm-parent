@@ -5,10 +5,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.sensorhistory.exception.UnauthorizedException;
 import com.aessense.agm.sensorhistory.persistence.Tenant;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,8 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
 		if( pathVars.containsKey(CUST_ID)) {
 			String customerId = (String) pathVars.get(CUST_ID);
 			Tenant.setTenantId(customerId); 
+		} else {
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "customerID", "Missing customerID path parameter.");
 		}
 		
 		return true;

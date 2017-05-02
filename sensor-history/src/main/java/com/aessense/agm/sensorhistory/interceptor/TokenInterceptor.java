@@ -2,7 +2,6 @@ package com.aessense.agm.sensorhistory.interceptor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.security.MessageDigest;
 import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.sensorhistory.exception.ServerException;
+import com.aessense.agm.sensorhistory.exception.UnauthorizedException;
 import com.aessense.agm.sensorhistory.persistence.Tenant;
 import com.aessense.agm.sensorhistory.util.TokenFactory;
 
@@ -39,8 +40,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 		// Get the token request parameter.
 		String token = request.getParameter("token");
 		if(StringUtils.isEmpty(token)) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "token", "Missing token");
 		}
 		
 		// Decode the token
@@ -56,8 +56,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 		if(token.equals(digestString)) {
 			return true;
 		} else {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;			
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "token", "Invalid token");			
 		}
 	}
 	
@@ -65,16 +64,16 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 	 * Decodes the token by first URL decoding then Base64 decoding.
 	 * @param token
 	 * @return
+	 * @throws ServerException 
 	 */
-	private String decodeToken(String token) {
+	private String decodeToken(String token) throws ServerException {
 		String decodedToken = null;
 		
 		try {
 			// Remove URL encoding.
 			decodedToken = URLDecoder.decode(token, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// This should ever happen
-			log.error("Could not URL Decode token.", e);
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "token", "Invalid token");
 		}
 		
 		// Remove Base64 encoding

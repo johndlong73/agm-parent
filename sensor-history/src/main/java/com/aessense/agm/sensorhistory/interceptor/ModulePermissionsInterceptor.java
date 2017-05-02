@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.sensorhistory.exception.ForbiddenException;
+import com.aessense.agm.sensorhistory.exception.UnauthorizedException;
 import com.aessense.agm.sensorhistory.model.ModulePermission;
 import com.aessense.agm.sensorhistory.model.ModuleType;
 import com.aessense.agm.sensorhistory.persistence.Tenant;
@@ -40,8 +42,7 @@ public class ModulePermissionsInterceptor extends HandlerInterceptorAdapter {
 		
 		// If list is empty then return forbidden
 		if(permissions.isEmpty()) {
-			response.sendError(HttpStatus.FORBIDDEN.value());
-			return false;
+			throw new ForbiddenException(HttpStatus.FORBIDDEN.value(), "", "Multiple Sensor Report permission disabled");
 		}
 		
 		// Customer has permission, return true.

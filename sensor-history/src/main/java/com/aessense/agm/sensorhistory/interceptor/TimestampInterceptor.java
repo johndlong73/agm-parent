@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.aessense.agm.sensorhistory.exception.UnauthorizedException;
 import com.aessense.agm.sensorhistory.util.DateFormatFactory;
 
 /**
@@ -36,8 +37,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		
 		// If the timestamp query param is missing or blank then return 401
 		if(StringUtils.isEmpty(timestampParam)) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;			
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "timestamp", "Missing timestamp");			
 		}
 		
 		long timestamp;
@@ -46,8 +46,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		try {
 			timestamp = Long.parseLong(timestampParam);
 		} catch(Exception e) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "timestamp", "Unparsable timestamp");
 		}
 		
 		long now = new Date().getTime();
@@ -57,8 +56,7 @@ public class TimestampInterceptor extends HandlerInterceptorAdapter {
 		// allow timestamp to be 5 seconds into the future to allow for 
 		// clock misalignment.
 		if(delta > ONE_MINUTE || delta < -5000 ) {
-			response.sendError(HttpStatus.UNAUTHORIZED.value());
-			return false;
+			throw new UnauthorizedException(HttpStatus.UNAUTHORIZED.value(), "timestamp", "Invalid timestamp");
 		} else {
 			return true;
 		}
